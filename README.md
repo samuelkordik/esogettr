@@ -10,6 +10,15 @@
 The goal of groverr is to make it easy to import data from ESO sources,
 CAD, and manipulate it.
 
+## Installation
+
+How to
+import:
+
+``` r
+install_github("samuelkordik/groverr", auth_token="35476994d9ed123dc5722c5557c960b8bf7874c8")
+```
+
 ## Data Sources
 
 ### ESO Data
@@ -93,15 +102,4 @@ ROOTS:
 #file_root <- "C:/Users/skordik/OneDrive - Cypress Creek Emergency Medical Services/March Data/"
 #file_root <- "/Users/samuelkordik/OneDrive - Cypress Creek Emergency Medical Services/March Data/"
 #file_root <- "W:/Monthly ESO Data/"
-```
-
-DB Connection (old):
-
-``` r
-  # con <- dbConnect(odbc(),
-  #                  Driver = "SQL Server",
-  #                  Server = "cadsql",
-  #                  Database = "CypressCreekCAD",
-  #                  UID = "CadSQLUser",
-  #                  PWD = "CadSQLUser")
 ```

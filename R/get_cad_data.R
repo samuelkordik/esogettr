@@ -3,11 +3,6 @@
 #'
 #' Requires network connection to CAD reporting database.
 #'
-#' @param agency string typically "ems01"
-#' @param server string
-#' @param database string
-#' @param UID string
-#' @param PWD string
 #' @param tzone Lubridate time zone to target dates/times to. DB stores them in UTC, default target is "US/Central"
 #' @param end_date end date (defaults to last month end)
 #' @param start_date start date (defaults to last month start)
@@ -15,7 +10,7 @@
 #' @return
 #' @export
 #'
-get_cad_incidents <- function(server, database, UID, PWD, agency, end_date = FALSE, start_date = FALSE, tzone="US/Central") {
+get_cad_incidents <- function(agency, end_date = FALSE, start_date = FALSE, tzone="US/Central") {
   # Set dates: End is last second of last month, start is a year prior
 
   if (!end_date) {
@@ -31,12 +26,8 @@ get_cad_incidents <- function(server, database, UID, PWD, agency, end_date = FAL
 
 
   # CREATE CONNECTION
-  con <- dbConnect(odbc(),
-                   Driver = "SQL Server",
-                   Server = server,
-                   Database = database,
-                   UID = UID,
-                   PWD = PWD)
+  con <- dbConnect(odbc::odbc(),
+                   .connection_string = 'driver={SQL Server};server=cadsql3;database=CypressCreekCAD;trusted_connection=true')
 
   # add Time Zone correction
   firstDate <- format(start_date, format="%D %T")
@@ -146,6 +137,9 @@ get_cad_incidents <- function(server, database, UID, PWD, agency, end_date = FAL
 
   # Fix TZ
   CADData <- CADData %>% mutate_if(is.POSIXct, with_tz, tzone=tzone)
+
+  #disconnect
+  odbc::dbDisconnect(con)
 
   CADData
 }

@@ -20,6 +20,13 @@ knitr::opts_chunk$set(
 
 The goal of groverr is to make it easy to import data from ESO sources, CAD, and manipulate it.
 
+## Installation
+How to import:
+```{r, eval=FALSE}
+install_github("samuelkordik/groverr", auth_token="35476994d9ed123dc5722c5557c960b8bf7874c8")
+```
+
+
 ## Data Sources
 
 ### ESO Data
@@ -84,15 +91,3 @@ FILE ROOTS:
 #file_root <- "/Users/samuelkordik/OneDrive - Cypress Creek Emergency Medical Services/March Data/"
 #file_root <- "W:/Monthly ESO Data/"
 ```
-
-DB Connection (old):
-```{r db_connection}
-  # con <- dbConnect(odbc(),
-  #                  Driver = "SQL Server",
-  #                  Server = "cadsql",
-  #                  Database = "CypressCreekCAD",
-  #                  UID = "CadSQLUser",
-  #                  PWD = "CadSQLUser")
-```
-
-
