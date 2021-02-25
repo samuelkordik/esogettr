@@ -60,6 +60,19 @@ Custom import functions ensure consistent typing, and more:
   - import\_stroke: Handles some unknown stuff.
   - import\_narrative
   - import\_cpr: handles some things. TODO here.
+  - import\_all\_data (imports all years/months/etc.) **Garbage
+    function**
+  - filtered\_incidents: Uses an existing data set to filter incidents
+    for import. TODO here with example.
+
+## ESO Data Transformations
+
+  - join\_crew: Adds Lead, Driver fields.
+  - cardiac\_arrest: Adds OHCA field. **Deprecate in favor of
+    is\_cardiac\_arrest**.
+  - rsi: Adds field for RSI meds or not
+  - rsi\_onscene
+  - blood
 
 ## Notes
 

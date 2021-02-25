@@ -372,3 +372,18 @@ import_cpr <- function(year, month=FALSE) {
            `ROSC Time` = mdy_hms(`ROSC Time`))
   cpr
 }
+
+#' import_all_data
+#'
+#' Imports all data in file root for a given table name.
+#'
+#' @param table_name
+#'
+#' @return
+#' @export
+#'
+#' @examples
+import_all_data <- function(table_name) {
+  files <- list.files(path = file_root, pattern = paste0("\\", table_name, ".csv$"))
+  files %>% map_dfr(~ read_csv(paste0(file_root, .)))
+}
