@@ -9,6 +9,9 @@ to adjust if needed.}
 \usage{
 get_file_root(override_interactive = FALSE)
 }
+\arguments{
+\item{override_interactive}{}
+}
 \value{
 file_root path (as string)
 }
