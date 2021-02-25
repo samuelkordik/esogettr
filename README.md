@@ -79,6 +79,11 @@ Custom import functions ensure consistent typing, and more:
   - get\_cad\_incidents(server, database, UID, PWD, agency,
     tzone=“US/Central”)
 
+## Utilities
+
+  - add\_op\_periods: Can sort CAD incidents or any thing with a
+    DispatchedTime field into operational periods.
+
 ## Notes
 
 FILE

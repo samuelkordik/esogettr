@@ -78,3 +78,57 @@ freq_table <- function(.data, group_var, summary=TRUE) {
       mutate(pct=round((n/totals[[1]])*100,2))
   }
 }
+
+#' Add Operational Periods
+#'
+#' Uses DispatchedTime field in responses dataset and matches
+#' against operational period intervals. Adds a column named
+#' "op_period" with the value of period_name, an indice, and the
+#' interval in YYYY-MM-DD HH:MM:SS format.
+#'
+#' @param responses Source data set with the DispatchedTime POSIXct field
+#' @param startDate Date time of interval starts
+#' @param endDate Date time of interval ends
+#' @param period_length Length of each operational period in hours
+#' @param period_name Name to insert in column
+#'
+#' @return responses + op_period field
+#' @export
+#'
+#' @examples
+#' startDate <- mdy_hms("02/14/2021 18:00:00", tz="US/Central")
+#' endDate <- mdy_hms("02/19/2021 18:00:00", tz="US/Central")
+#' \dontrun{
+#' add_op_periods(responses, startDate, endDate)
+#' }
+#' # adds op_period column with value of (e.g.) "Operational Period 1 (2021-02-14 18:00:00-2021-02-15 06:00:00)"
+#'
+add_op_periods <- function(responses, startDate, endDate, period_length=12,period_name = "Operational Period") {
+  op_period_intervals <- get_operational_period_intervals(startDate, endDate, period_length)
+  responses <- responses %>% mutate(op_period = "")
+
+  for (i in 1:length(op_period_intervals)) {
+    responses <- responses %>% mutate(op_period = if_else(DispatchedTime %within% op_period_intervals[i], paste(period_name, i, paste0("(", int_start(op_period_intervals[i]), "-", int_end(op_period_intervals[i]),")")), op_period))
+
+  }
+  responses
+}
+
+get_operational_period_intervals <- function(startDate, endDate, period_length = 12) {
+  # Set first period as interval
+  period_start <- startDate
+  period_end <- startDate + hours(period_length)
+  sequence_index <- 1
+
+  op_period_intervals <- c(interval(period_start, period_end))
+
+  # Loop through remaining periods
+  while(period_end < endDate) {
+    sequence_index <- sequence_index + 1
+    period_start <- period_end
+    period_end <- period_start + hours(period_length)
+    op_period_intervals <- c(op_period_intervals, interval(period_start, period_end))
+  }
+  op_period_intervals
+}
+
