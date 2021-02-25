@@ -2,12 +2,11 @@
 #' Imports incidents table filtered against the filter_set
 #' passed to it. Filter Set has to have PatientCareRecordId index.
 #'
-#' @param year
-#' @param month
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
 #' @param filter_set Tibble of ESO data
 #' @export
 #'
-#' @examples
 filtered_incidents <- function(year, month, filter_set) {
   import_eso_data(year, month, "Incidents") %>% filter(PatientCareRecordId %in% filter_set$PatientCareRecordId)
 }
@@ -17,13 +16,12 @@ filtered_incidents <- function(year, month, filter_set) {
 #' Adds a column to any ESO data table for Lead and Driver, using Last, First.
 #'
 #' @param .data ESO data table (needs to have PatientCareRecordId index)
-#' @param year
-#' @param month
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
 #'
 #' @return ESO data table + Lead, Driver column
 #' @export
 #'
-#' @examples
 join_crew <- function(.data, year, month=FALSE) {
   personnel <- import_eso_data(year, month, "Personnel") %>% unite(full_name, `Crew Member Last Name`, `Crew Member First Name`, sep=", ") %>% dplyr::select(PatientCareRecordId, full_name, `Crew Member Role`) %>% filter(`Crew Member Role` %in% c("Lead", "Driver"))
   personnel <- personnel %>% unique() %>% spread(key=`Crew Member Role`, value=full_name)
@@ -36,8 +34,8 @@ join_crew <- function(.data, year, month=FALSE) {
 #' was a cardiac arrest or not.
 #'
 #' @param the_incidents Incidents table
-#' @param year
-#' @param month
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
 #'
 #' @return Incidents + OHCA field
 #' @export
@@ -56,23 +54,26 @@ cardiac_arrest <- function(the_incidents, year, month=FALSE) {
 
 #' Wrapper for Cardiac Arrest function
 #'
-#' @param data
-#' @param year
-#' @param month
+#' @param data incident table
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
 #'
-#' @return
+#' @return tibble with OHCA field
 #' @export
 #'
-#' @examples
 is_cardiac_arrest <- function(data, year, month=FALSE) {
   cardiac_arrest(data, year, month)
 }
 
-# rsi
-#
-# Transforms incidents table to include a
-# field "RSI" indicating if the patient
-# received RSI meds or not.
+#' Did the patient get RSI meds?
+#'
+#' @param the_incidents table of incidents
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#'
+#' @return tibble with RSI column added
+#' @export
+#'
 rsi <- function(the_incidents, year, month=FALSE) {
   rsi_meds <- import_eso_data(year, month, "Medications") %>% filter(`Treatment Name` %in% c("Rocuronium", "Succinylcholine", "Etomidate", "Pancuronium"))
 
@@ -80,12 +81,16 @@ rsi <- function(the_incidents, year, month=FALSE) {
   the_incidents %>% mutate(RSI = if_else(PatientCareRecordId %in% rsi_meds$PatientCareRecordId, "RSI", "Not RSI"))
 }
 
-# rsi_onscene
-#
-# Transforms incidents table to include a
-# field "RSI" indicating if the patient
-# received RSI meds or not prior to departing scene.
 
+#' DId the patient get RSI meds before leaving scene?
+#'
+#' @param the_incidents tibble of incidents
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#'
+#' @return tibble iith RSI_onscene
+#' @export
+#'
 rsi_onscene <- function(the_incidents, year, month=FALSE) {
   rsi_meds <- import_eso_data(year, month, "Medications") %>% filter(`Treatment Name` %in% c("Rocuronium", "Succinylcholine", "Etomidate", "Pancuronium")) %>% dplyr::select(PatientCareRecordId, `Treatment Name`, `Treatment Date`)
 
@@ -100,12 +105,18 @@ rsi_onscene <- function(the_incidents, year, month=FALSE) {
   the_incidents %>% mutate(RSI_onscene = if_else(PatientCareRecordId %in% rsi_meds$PatientCareRecordId, "RSI on scene", "No RSI on scene"))
 }
 
-# blood
-#
-# Transforms incidents table to include a
-# field "Blood" indicating if the patient
-# received blood products or not.
 
+#' Blood
+#'
+#' Transforms incidents table to include a field "Blood" indicating if the patient received blood products or not.
+#'
+#' @param the_incidents tibble of incidents
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#'
+#' @return tibble with Blood field
+#' @export
+#'
 blood <- function(the_incidents, year, month=FALSE) {
   blood_meds <- import_eso_data(year, month, "Medications") %>% filter(`Treatment Name` %in% c('Fresh Frozen Plasma (FFP)', 'Packed Red Blood Cells (PRBC)', 'Whole Blood'))
   #mutate data directly

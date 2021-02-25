@@ -3,7 +3,7 @@
 #' local system; if in interactive mode gives option
 #' to adjust if needed.
 #'
-#' @param override_interactive
+#' @param override_interactive whether or not to force default value
 #'
 #' @return file_root path (as string)
 #' @export
@@ -23,6 +23,9 @@ get_file_root <- function(override_interactive = FALSE) {
 
 #' Get file root on Windows
 #' Gives interactive options for choosing differently.
+#'
+#' @param user_name system user name
+#' @param override_interactive inherit from above
 #'
 #' @return file_root path (as string)
 windows_file_root <- function(user_name, override_interactive = FALSE) {

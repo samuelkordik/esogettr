@@ -12,7 +12,7 @@
 #' @return Tibble with imported data
 #' @export
 #'
-#' @examples
+
 import_eso_data <- function(year, month=FALSE, table_name) {
   if(month == FALSE) {
     read_csv(paste0(file_root, paste(year, table_name, sep="_"), ".csv", col_ty), na=character())
@@ -20,6 +20,15 @@ import_eso_data <- function(year, month=FALSE, table_name) {
     read_csv(paste0(file_root, paste(year, month, table_name, sep="_"), ".csv"), na=character())
   }
 }
+
+#' Import Patients table
+#'
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#'
+#' @return Tibble with imported data
+#' @export
+#'
 
 import_patients <- function(year, month=FALSE) {
   if(month == FALSE) {
@@ -36,9 +45,16 @@ import_patients <- function(year, month=FALSE) {
              `Driving License Number` = col_character()
            ))
 }
+#' Import Incidents
+#'
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#'
+#' @return Tibble with imported data, dtDate, month fields
+#' @export
+#'
+
 import_incidents <- function(year, month=FALSE) {
-  require(tidyverse)
-  require(lubridate)
 
   if(month == FALSE) {
     file_name <- paste(year, "Incidents", sep="_")
@@ -134,12 +150,16 @@ import_incidents <- function(year, month=FALSE) {
 
 }
 
-# import_vitals
-# Custom function to import vitals with consistent data types; corrects times
+#' Import Vitals
+#'
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#'
+#' @return Tibble with imported data, vsDate
+#' @export
+#'
 
 import_vitals <- function(year, month=FALSE) {
-  require(tidyverse)
-  require(lubridate)
 
   if(month == FALSE) {
     file_name <- paste(year, "Vitals+", sep="_")
@@ -171,12 +191,16 @@ import_vitals <- function(year, month=FALSE) {
 
 }
 
-# import_treatments
-# Custom function to import treatments
+#' Import complete treatment set
+#'
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#'
+#' @return tibble with treatments, dtTreatment
+#' @export
+#'
 
 import_treatments <- function(year, month=FALSE) {
-  require(tidyverse)
-  require(lubridate)
   if(month == FALSE) {
     file_pre <- year
   } else {
@@ -230,10 +254,8 @@ import_treatments <- function(year, month=FALSE) {
 #' @return Tibble with stroke form data for selected year and month.
 #' @export
 #'
-#' @examples
+
 import_stroke <- function(year, month=FALSE) {
-  require(tidyverse)
-  require(lubridate)
 
   if(month == FALSE) {
     file_name <- paste(year, "Stroke", sep="_")
@@ -245,12 +267,17 @@ import_stroke <- function(year, month=FALSE) {
   strokes
 }
 
-# import_narrative
-# Custom function to import narrative with consistent data types.
+
+#' Import Narrative
+#'
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#'
+#' @return tibble of imported data
+#' @export
+#'
 
 import_narrative <- function(year, month=FALSE) {
-  require(tidyverse)
-  require(lubridate)
   if(month == FALSE) {
     file_name <- paste(year, "Narrative", sep="_")
   } else {
@@ -314,15 +341,13 @@ import_narrative <- function(year, month=FALSE) {
 
 #' Imports CPR table
 #'
-#' @param year
-#' @param month
+#' @param year String with year to select data for.
+#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
 #'
 #' @return tibble with CPR data
 #' @export
 #'
 import_cpr <- function(year, month=FALSE) {
-  require(tidyverse)
-  require(lubridate)
 
   if(month == FALSE) {
     file_name <- paste(year, "CPR", sep="_")
@@ -377,12 +402,12 @@ import_cpr <- function(year, month=FALSE) {
 #'
 #' Imports all data in file root for a given table name.
 #'
-#' @param table_name
+#' @param table_name Name of ESO table
 #'
 #' @return
 #' @export
 #'
-#' @examples
+
 import_all_data <- function(table_name) {
   files <- list.files(path = file_root, pattern = paste0("\\", table_name, ".csv$"))
   files %>% map_dfr(~ read_csv(paste0(file_root, .)))

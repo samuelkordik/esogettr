@@ -12,7 +12,9 @@ cardiac_arrest(the_incidents, year, month = FALSE)
 \arguments{
 \item{the_incidents}{Incidents table}
 
-\item{month}{}
+\item{year}{String with year to select data for.}
+
+\item{month}{optional string with month to select data for. FALSE will load a full year's worth of data.}
 }
 \value{
 Incidents + OHCA field

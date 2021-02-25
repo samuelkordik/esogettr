@@ -7,10 +7,14 @@
 is_cardiac_arrest(data, year, month = FALSE)
 }
 \arguments{
-\item{month}{}
+\item{data}{incident table}
+
+\item{year}{String with year to select data for.}
+
+\item{month}{optional string with month to select data for. FALSE will load a full year's worth of data.}
 }
 \value{
-
+tibble with OHCA field
 }
 \description{
 Wrapper for Cardiac Arrest function

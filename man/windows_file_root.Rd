@@ -7,6 +7,11 @@ Gives interactive options for choosing differently.}
 \usage{
 windows_file_root(user_name, override_interactive = FALSE)
 }
+\arguments{
+\item{user_name}{system user name}
+
+\item{override_interactive}{inherit from above}
+}
 \value{
 file_root path (as string)
 }

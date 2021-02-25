@@ -9,6 +9,10 @@ passed to it. Filter Set has to have PatientCareRecordId index.}
 filtered_incidents(year, month, filter_set)
 }
 \arguments{
+\item{year}{String with year to select data for.}
+
+\item{month}{optional string with month to select data for. FALSE will load a full year's worth of data.}
+
 \item{filter_set}{Tibble of ESO data}
 }
 \description{

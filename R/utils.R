@@ -4,7 +4,6 @@
 #' @return YYYY formatted string.
 #' @export
 #'
-#' @examples
 set_year <- function() {
   a <- year(today() - months(1))
   b <- uio(paste0("Year is set as '", a, "'. Press Enter to continue, or type in an alternate entry."), wait=TRUE)
@@ -17,28 +16,28 @@ set_year <- function() {
 #' @return MM formatted string.
 #' @export
 #'
-#' @examples
 set_month <- function() {
   a <- sprintf("%02d",month(today() - months(1)))
   b <- uio(paste0("Month is set as '", a, "'. Press Enter to continue, or type in an alternate entry."), wait=TRUE)
   ifelse(b == "", a, b)
 }
 
-# uio
-#
-# uio is a wrapper function that provides the
-#   ability to interact with the user. If not
-#   in interactive mode, this function stops
-#   execution as a protective measure.
-#
-# `output` is the text displayed (output) to
-#   the user.
-# `wait` specifies whether or not the script
-#   should pause for input. Defaults to FALSE.
-#
-# Returns either TRUE (if `wait` is FALSE) or
-#   the value entered by the user.
 
+#' User Input/Output
+#'
+#' uio is a wrapper function that provides the
+#' ability to interact with the user. If not
+#' in interactive mode, this function stops
+#' execution as a protective measure.
+#'
+#' @param output is the text displayed (output) to
+#   the user.
+#' @param wait specifies whether or not the script
+#   should pause for input. Defaults to FALSE.
+#'
+#' @return TRUE (if wait is FALSE) or value entered by the user.
+#' @export
+#'
 uio <- function(output, wait = FALSE) {
   if(interactive()) {
     if(wait) {
@@ -52,15 +51,19 @@ uio <- function(output, wait = FALSE) {
   }
 }
 
-# freq_table
-#
-# freq_table reports frequencies, percentages, and totals for a tibble
-# based on grouping columns.
-#
-# Arguments:
-# .data       tibble to use.
-# group_var   vector of columns to group by
 
+#' freq_table
+#'
+#' freq_table reports frequencies, percentages, and totals for a tibble
+#' based on grouping columns.
+#'
+#' @param .data tibble to use
+#' @param group_var vector of columns to group by
+#' @param summary logi whether to summarize
+#'
+#' @return summarized (or not) list
+#' @export
+#'
 freq_table <- function(.data, group_var, summary=TRUE) {
 
   totals <- .data %>% tally() %>%
@@ -96,9 +99,9 @@ freq_table <- function(.data, group_var, summary=TRUE) {
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' startDate <- mdy_hms("02/14/2021 18:00:00", tz="US/Central")
 #' endDate <- mdy_hms("02/19/2021 18:00:00", tz="US/Central")
-#' \dontrun{
 #' add_op_periods(responses, startDate, endDate)
 #' }
 #' # adds op_period column with value of (e.g.) "Operational Period 1 (2021-02-14 18:00:00-2021-02-15 06:00:00)"
@@ -114,6 +117,14 @@ add_op_periods <- function(responses, startDate, endDate, period_length=12,perio
   responses
 }
 
+#' Get list of operational period intervals
+#'
+#' @param startDate start date POSIXct
+#' @param endDate end date POSIXct
+#' @param period_length length in hours of interval
+#'
+#' @return vector sequence of intervals
+#'
 get_operational_period_intervals <- function(startDate, endDate, period_length = 12) {
   # Set first period as interval
   period_start <- startDate

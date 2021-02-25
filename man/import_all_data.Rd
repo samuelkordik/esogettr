@@ -7,7 +7,7 @@
 import_all_data(table_name)
 }
 \arguments{
-\item{table_name}{}
+\item{table_name}{Name of ESO table}
 }
 \value{
 

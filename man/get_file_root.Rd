@@ -10,7 +10,7 @@ to adjust if needed.}
 get_file_root(override_interactive = FALSE)
 }
 \arguments{
-\item{override_interactive}{}
+\item{override_interactive}{whether or not to force default value}
 }
 \value{
 file_root path (as string)
