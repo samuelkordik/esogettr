@@ -74,6 +74,11 @@ Custom import functions ensure consistent typing, and more:
   - rsi\_onscene
   - blood
 
+## Importing CAD
+
+  - get\_cad\_incidents(server, database, UID, PWD, agency,
+    tzone=“US/Central”)
+
 ## Notes
 
 FILE
@@ -83,4 +88,15 @@ ROOTS:
 #file_root <- "C:/Users/skordik/OneDrive - Cypress Creek Emergency Medical Services/March Data/"
 #file_root <- "/Users/samuelkordik/OneDrive - Cypress Creek Emergency Medical Services/March Data/"
 #file_root <- "W:/Monthly ESO Data/"
+```
+
+DB Connection (old):
+
+``` r
+  # con <- dbConnect(odbc(),
+  #                  Driver = "SQL Server",
+  #                  Server = "cadsql",
+  #                  Database = "CypressCreekCAD",
+  #                  UID = "CadSQLUser",
+  #                  PWD = "CadSQLUser")
 ```

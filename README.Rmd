@@ -64,12 +64,14 @@ Custom import functions ensure consistent typing, and more:
   - filtered_incidents: Uses an existing data set to filter incidents for import. TODO here with example.
   
 ## ESO Data Transformations
-
 - join_crew: Adds Lead, Driver fields.
 - cardiac_arrest: Adds OHCA field. __Deprecate in favor of is_cardiac_arrest__.
 - rsi: Adds field for RSI meds or not
 - rsi_onscene
 - blood
+
+## Importing CAD
+- get_cad_incidents(server, database, UID, PWD, agency, tzone="US/Central")
   
 
 ## Notes
@@ -78,6 +80,16 @@ FILE ROOTS:
 #file_root <- "C:/Users/skordik/OneDrive - Cypress Creek Emergency Medical Services/March Data/"
 #file_root <- "/Users/samuelkordik/OneDrive - Cypress Creek Emergency Medical Services/March Data/"
 #file_root <- "W:/Monthly ESO Data/"
-
 ```
+
+DB Connection (old):
+```{r db_connection}
+  # con <- dbConnect(odbc(),
+  #                  Driver = "SQL Server",
+  #                  Server = "cadsql",
+  #                  Database = "CypressCreekCAD",
+  #                  UID = "CadSQLUser",
+  #                  PWD = "CadSQLUser")
+```
+
 

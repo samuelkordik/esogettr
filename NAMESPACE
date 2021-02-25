@@ -2,6 +2,7 @@
 
 export(cardiac_arrest)
 export(filtered_incidents)
+export(get_cad_incidents)
 export(get_file_root)
 export(import_all_data)
 export(import_cpr)
