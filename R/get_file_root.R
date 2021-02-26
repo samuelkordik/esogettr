@@ -17,6 +17,15 @@ get_file_root <- function(override_interactive = FALSE) {
                       "Darwin" = paste0("/Users/",user_name,"/OneDrive - Cypress Creek Emergency Medical Services/March Data/"),
                       "Windows" = windows_file_root(user_name, override_interactive))
 
+  while(!is_dir(file_root)) {
+    if(interactive() & !override_interactive & sys_type == "Windows") {
+      # Give option to handle wrong file root. Only applies on windows.
+      file_root <- windows_file_root(user_name, override_interactive)
+    } else {
+      stop(glue("Invalid file root specified: {file_root}"))
+    }
+  }
+
   message(paste("Using",file_root,"for data source."))
   return(file_root)
 }
@@ -59,6 +68,7 @@ windows_file_root <- function(user_name, override_interactive = FALSE) {
       )
     }
   }
+
 
   return(file_root)
 }

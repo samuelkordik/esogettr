@@ -14,11 +14,7 @@
 #'
 
 import_eso_data <- function(year, month=FALSE, table_name) {
-  if(month == FALSE) {
-    read_csv(paste0(file_root, paste(year, table_name, sep="_"), ".csv", col_ty), na=character())
-  } else {
-    read_csv(paste0(file_root, paste(year, month, table_name, sep="_"), ".csv"), na=character())
-  }
+  read_eso_csv(year, month, table_name)
 }
 
 #' Import Patients table
@@ -31,12 +27,7 @@ import_eso_data <- function(year, month=FALSE, table_name) {
 #'
 
 import_patients <- function(year, month=FALSE) {
-  if(month == FALSE) {
-    path <- paste0(file_root, paste(year, "Patient_Info", sep="_"), ".csv")
-  } else {
-    path <- paste0(file_root, paste(year, month, "Patient_Info", sep="_"), ".csv")
-  }
-  read_csv(path, na=character(),
+  read_eso_csv(year, month, "Patient_Info", path, na=character(),
            col_types = cols(
              `Phone - Home` = col_character(),
              `Social Security Number` = col_character(),
@@ -55,13 +46,7 @@ import_patients <- function(year, month=FALSE) {
 #'
 
 import_incidents <- function(year, month=FALSE) {
-
-  if(month == FALSE) {
-    file_name <- paste(year, "Incidents", sep="_")
-  } else {
-    file_name <- paste(year, month, "Incidents", sep="_")
-  }
-  incidents <- read_csv(paste0(file_root, file_name, ".csv"),
+  incidents <- read_eso_csv(year, month, "Incidents",
                         col_types = cols(
                           PatientCareRecordId = col_character(),
                           `Incident Date` = col_character(),
@@ -160,13 +145,7 @@ import_incidents <- function(year, month=FALSE) {
 #'
 
 import_vitals <- function(year, month=FALSE) {
-
-  if(month == FALSE) {
-    file_name <- paste(year, "Vitals+", sep="_")
-  } else {
-    file_name <- paste(year, month, "Vitals+", sep="_")
-  }
-  vitals <- read_csv(paste0(file_root, file_name, ".csv"),
+  vitals <- read_eso_csv(year, month, "Vitals+",
                      col_types = cols(
                        .default = col_character(),
                        `BP Systolic` = col_integer(),
@@ -278,12 +257,8 @@ import_stroke <- function(year, month=FALSE) {
 #'
 
 import_narrative <- function(year, month=FALSE) {
-  if(month == FALSE) {
-    file_name <- paste(year, "Narrative", sep="_")
-  } else {
-    file_name <- paste(year, month, "Narrative", sep="_")
-  }
-  narrative <- read_csv(paste0(file_root, file_name, ".csv"),
+
+  narrative <- read_eso_csv(year, month, "Narrative"
                         col_types = cols(
                           PatientCareRecordId = col_character(),
                           `Primary Impression` = col_character(),
