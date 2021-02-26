@@ -30,24 +30,29 @@ set_month <- function() {
 #' in interactive mode, this function stops
 #' execution as a protective measure.
 #'
-#' @param output is the text displayed (output) to
-#   the user.
-#' @param wait specifies whether or not the script
-#   should pause for input. Defaults to FALSE.
+#' @param output is the text displayed (output) tothe user.
+#' @param accept list of acceptable responses.
+#' @param wait  specifies whether or not the script should pause for input. Defaults to FALSE.
 #'
 #' @return TRUE (if wait is FALSE) or value entered by the user.
 #' @export
 #'
-uio <- function(output, wait = FALSE) {
+uio <- function(output, accept = NULL, wait = FALSE) {
   if(interactive()) {
     if(wait) {
       cat(output)
-      inp <- readline(prompt="Type an option to continue:"); inp
+      inp <- readline(prompt="Type an option to continue:")
+      if(!is.null(accept)) {
+        while (!inp %in% accept) {
+          inp <- readline(prompt="Invalid option. Type an option to continue:")
+        }
+      }
+      return(inp)
     } else {
       write(output, stdout())
     }
   } else {
-    stop()
+    stop("UIO called in non-interactive setting.")
   }
 }
 
