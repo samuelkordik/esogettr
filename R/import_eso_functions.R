@@ -258,7 +258,7 @@ import_stroke <- function(year, month=FALSE) {
 
 import_narrative <- function(year, month=FALSE) {
 
-  narrative <- read_eso_csv(year, month, "Narrative"
+  narrative <- read_eso_csv(year, month, "Narrative",
                         col_types = cols(
                           PatientCareRecordId = col_character(),
                           `Primary Impression` = col_character(),

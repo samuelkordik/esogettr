@@ -23,7 +23,7 @@ read_eso_csv <- function(year, month=FALSE, table_name,...) {
 
 
 
-  while (!is_file(path)) {
+  while (!file_exists(path)) {
     # Handle missing file
     if(interactive()) {
       menu <- glue("File '{file_name}' not found. Select an option:

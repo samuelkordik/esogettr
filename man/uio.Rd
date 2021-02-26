@@ -4,12 +4,14 @@
 \alias{uio}
 \title{User Input/Output}
 \usage{
-uio(output, wait = FALSE)
+uio(output, accept = NULL, wait = FALSE)
 }
 \arguments{
-\item{output}{is the text displayed (output) to}
+\item{output}{is the text displayed (output) tothe user.}
 
-\item{wait}{specifies whether or not the script}
+\item{accept}{list of acceptable responses.}
+
+\item{wait}{specifies whether or not the script should pause for input. Defaults to FALSE.}
 }
 \value{
 TRUE (if wait is FALSE) or value entered by the user.

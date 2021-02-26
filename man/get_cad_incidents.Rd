@@ -5,10 +5,6 @@
 \title{Import TSTATS from CAD}
 \usage{
 get_cad_incidents(
-  server,
-  database,
-  UID,
-  PWD,
   agency,
   end_date = FALSE,
   start_date = FALSE,
@@ -16,16 +12,6 @@ get_cad_incidents(
 )
 }
 \arguments{
-\item{server}{string}
-
-\item{database}{string}
-
-\item{UID}{string}
-
-\item{PWD}{string}
-
-\item{agency}{string typically "ems01"}
-
 \item{end_date}{end date (defaults to last month end)}
 
 \item{start_date}{start date (defaults to last month start)}

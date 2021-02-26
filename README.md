@@ -92,6 +92,9 @@ Custom import functions ensure consistent typing, and more:
 
   - add\_op\_periods: Can sort CAD incidents or any thing with a
     DispatchedTime field into operational periods.
+  - merge\_eso\_data: Useful to merge multiple files downloaded from Ad
+    Hoc together. Key for year-long or larger datasets that run into row
+    length limitations.
 
 ## Notes
 
