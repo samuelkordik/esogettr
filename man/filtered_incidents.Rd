@@ -2,21 +2,21 @@
 % Please edit documentation in R/eso_transformations.R
 \name{filtered_incidents}
 \alias{filtered_incidents}
-\title{Imports a Filtered Incident Set
-Imports incidents table filtered against the filter_set
-passed to it. Filter Set has to have PatientCareRecordId index.}
+\title{Imports a Filtered Incident Set}
 \usage{
-filtered_incidents(year, month, filter_set)
+filtered_incidents(year, month, filter_set, .left_join = FALSE)
 }
 \arguments{
-\item{year}{String with year to select data for.}
+\item{year}{Year of data set as "YYYY" string}
 
-\item{month}{optional string with month to select data for. FALSE will load a full year's worth of data.}
+\item{month}{Month of data set as "MM" string, or FALSE to look for full year.}
 
 \item{filter_set}{Tibble of ESO data}
+
+\item{.left_join}{optional argument that does a left join to add the filtered set to incidents.}
 }
 \description{
-Imports a Filtered Incident Set
-Imports incidents table filtered against the filter_set
-passed to it. Filter Set has to have PatientCareRecordId index.
+Imports the Incidents table for a given year and month
+but only includes patient care records that match
+\code{`PatientCareRecordId`} in the \code{filter_set}.
 }

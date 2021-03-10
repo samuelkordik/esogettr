@@ -2,24 +2,69 @@
 % Please edit documentation in R/import_eso_functions.R
 \name{import_eso_data}
 \alias{import_eso_data}
+\alias{import_patients}
+\alias{import_incidents}
+\alias{import_vitals}
+\alias{import_treatments}
+\alias{import_stroke}
+\alias{import_narrative}
+\alias{import_cpr}
 \title{Import ESO Table}
 \usage{
 import_eso_data(year, month = FALSE, table_name)
+
+import_patients(year, month = FALSE)
+
+import_incidents(year, month = FALSE)
+
+import_vitals(year, month = FALSE)
+
+import_treatments(year, month = FALSE)
+
+import_stroke(year, month = FALSE)
+
+import_narrative(year, month = FALSE)
+
+import_cpr(year, month = FALSE)
 }
 \arguments{
-\item{year}{YYYY string}
+\item{year}{Year of data set as "YYYY" string}
 
-\item{month}{MM string OR logi FALSE.}
+\item{month}{Month of data set as "MM" string, or FALSE to look for full year.}
 
 \item{table_name}{string of table name to find file.}
 }
 \value{
 Tibble with imported data
+
+tibble of imported data
 }
 \description{
 Works with consistent naming conventions to
 simplify importing the monthly data table export.
+See \code{vignette("importing-pcrs")} for more information.
 }
 \details{
 Requires file_root to be present in the environment.
+}
+\section{Functions}{
+\itemize{
+\item \code{import_patients}: Imports the patient information table and adds calculated age.
+
+\item \code{import_incidents}: Imports incident information
+
+\item \code{import_vitals}: Imports vital sign records
+
+\item \code{import_treatments}: Imports complete treatment set
+
+\item \code{import_stroke}: Imports Stroke Form Data
+
+\item \code{import_narrative}: Import Narrative
+
+\item \code{import_cpr}: Imports CPR table
+}}
+
+\examples{
+import_eso_data("2020", "02", "Personnel") # Imports one month
+import_eso_data("2020", FALSE, "Personnel") # Imports an entire year
 }

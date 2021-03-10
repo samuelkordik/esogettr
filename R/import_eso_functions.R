@@ -2,48 +2,60 @@
 #'
 #' Works with consistent naming conventions to
 #' simplify importing the monthly data table export.
+#' See `vignette("importing-pcrs")` for more information.
 #'
 #' Requires file_root to be present in the environment.
 #'
-#' @param year YYYY string
-#' @param month MM string OR logi FALSE.
+#' @param year Year of data set as "YYYY" string
+#' @param month Month of data set as "MM" string, or FALSE to look for full year.
 #' @param table_name string of table name to find file.
 #'
 #' @return Tibble with imported data
 #' @export
 #'
+#' @examples
+#' import_eso_data("2020", "02", "Personnel") # Imports one month
+#' import_eso_data("2020", FALSE, "Personnel") # Imports an entire year
 
 import_eso_data <- function(year, month=FALSE, table_name) {
   read_eso_csv(year, month, table_name)
 }
 
-#' Import Patients table
-#'
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
-#'
-#' @return Tibble with imported data
+#' @describeIn import_eso_data Imports the patient information table and adds calculated age.
 #' @export
-#'
 
 import_patients <- function(year, month=FALSE) {
-  read_eso_csv(year, month, "Patient_Info", path, na=character(),
+  patients <- read_eso_csv(year, month, "Patient_Info", na=character(),
            col_types = cols(
              `Phone - Home` = col_character(),
              `Social Security Number` = col_character(),
              `Zip-Postal Code` = col_character(),
              `Phone - Cell` = col_character(),
-             `Driving License Number` = col_character()
+             `Driving License Number` = col_character(),
+             `Physician Middle Name` = col_character()
            ))
+  patients %>% mutate(`Patient DOB` = mdy_hms(`Patient DOB`),
+                      age_years = convert_estimated_age(`Patient Age`),
+                      )
 }
-#' Import Incidents
+
+
+#' Convert estimated age to decimal age in years
 #'
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#' @param patient_age Age in string
 #'
-#' @return Tibble with imported data, dtDate, month fields
+#' @return Double of patient age in years
+convert_estimated_age <- function(patient_age) {
+  ages <- str_match(patient_age,
+                    "(\\d+) Years, (\\d+) Months, (\\d*) Days")
+  ages[,2] <- as.numeric(ages[,2])
+  ages[,3] <- as.numeric(ages[,3])
+  ages[,4] <- as.numeric(ages[,4])
+  as.numeric(ages[,2]) + as.numeric(ages[,3])/12 + as.numeric(ages[,4])/365
+}
+
+#' @describeIn import_eso_data Imports incident information
 #' @export
-#'
 
 import_incidents <- function(year, month=FALSE) {
   incidents <- read_eso_csv(year, month, "Incidents",
@@ -135,12 +147,7 @@ import_incidents <- function(year, month=FALSE) {
 
 }
 
-#' Import Vitals
-#'
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
-#'
-#' @return Tibble with imported data, vsDate
+#' @describeIn import_eso_data Imports vital sign records
 #' @export
 #'
 
@@ -170,12 +177,7 @@ import_vitals <- function(year, month=FALSE) {
 
 }
 
-#' Import complete treatment set
-#'
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
-#'
-#' @return tibble with treatments, dtTreatment
+#' @describeIn import_eso_data Imports complete treatment set
 #' @export
 #'
 
@@ -225,12 +227,7 @@ import_treatments <- function(year, month=FALSE) {
 
 }
 
-#' Imports Stroke Form Data
-#'
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
-#'
-#' @return Tibble with stroke form data for selected year and month.
+#' @describeIn import_eso_data Imports Stroke Form Data
 #' @export
 #'
 
@@ -247,10 +244,7 @@ import_stroke <- function(year, month=FALSE) {
 }
 
 
-#' Import Narrative
-#'
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#' @describeIn import_eso_data Import Narrative
 #'
 #' @return tibble of imported data
 #' @export
@@ -314,12 +308,7 @@ import_narrative <- function(year, month=FALSE) {
 
 }
 
-#' Imports CPR table
-#'
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
-#'
-#' @return tibble with CPR data
+#' @describeIn import_eso_data Imports CPR table
 #' @export
 #'
 import_cpr <- function(year, month=FALSE) {

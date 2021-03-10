@@ -9,9 +9,9 @@ join_crew(.data, year, month = FALSE)
 \arguments{
 \item{.data}{ESO data table (needs to have PatientCareRecordId index)}
 
-\item{year}{String with year to select data for.}
+\item{year}{Year of data set as "YYYY" string}
 
-\item{month}{optional string with month to select data for. FALSE will load a full year's worth of data.}
+\item{month}{Month of data set as "MM" string, or FALSE to look for full year.}
 }
 \value{
 ESO data table + Lead, Driver column

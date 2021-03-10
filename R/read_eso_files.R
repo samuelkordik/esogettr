@@ -23,10 +23,10 @@ read_eso_csv <- function(year, month=FALSE, table_name,...) {
 
 
 
-  while (!file_exists(path)) {
+  while (!fs::file_exists(path)) {
     # Handle missing file
     if(interactive()) {
-      menu <- glue("File '{file_name}' not found. Select an option:
+      menu <- glue::glue("File '{file_name}' not found. Select an option:
                    (y) Change year
                    (m) Change month
                    (t) Change table_name
@@ -58,7 +58,7 @@ read_eso_csv <- function(year, month=FALSE, table_name,...) {
   }
 
   message(glue("Importing from {path}"))
-  read_csv(path, ...)
+  readr::read_csv(path, ...)
 }
 
 

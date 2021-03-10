@@ -21,3 +21,7 @@ Imports:
   odbc,
   fs,
   glue
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

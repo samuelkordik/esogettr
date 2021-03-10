@@ -10,8 +10,6 @@
 #'
 #' @return dataset
 #' @export
-#'
-#' @examples
 merge_eso_data <- function(year, month=FALSE,table_name,...) {
   if(!exists("file_root")) {
     file_root <<- get_file_root()

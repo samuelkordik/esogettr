@@ -1,14 +1,20 @@
 #' Imports a Filtered Incident Set
-#' Imports incidents table filtered against the filter_set
-#' passed to it. Filter Set has to have PatientCareRecordId index.
 #'
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#' Imports the Incidents table for a given year and month
+#' but only includes patient care records that match
+#' \code{`PatientCareRecordId`} in the \code{filter_set}.
+#'
+#' @inheritParams import_eso_data
 #' @param filter_set Tibble of ESO data
+#' @param .left_join optional argument that does a left join to add the filtered set to incidents.
 #' @export
 #'
-filtered_incidents <- function(year, month, filter_set) {
-  import_eso_data(year, month, "Incidents") %>% filter(PatientCareRecordId %in% filter_set$PatientCareRecordId)
+filtered_incidents <- function(year, month, filter_set, .left_join=FALSE) {
+  incidents <- import_eso_data(year, month, "Incidents") %>% filter(PatientCareRecordId %in% filter_set$PatientCareRecordId)
+  if (.left_join) {
+    incidents <- left_join(incidents, filter_set, by="PatientCareRecordId")
+  }
+  return(incidents)
 }
 
 #' Add Crew to ESO table
@@ -16,8 +22,7 @@ filtered_incidents <- function(year, month, filter_set) {
 #' Adds a column to any ESO data table for Lead and Driver, using Last, First.
 #'
 #' @param .data ESO data table (needs to have PatientCareRecordId index)
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#' @inheritParams import_eso_data
 #'
 #' @return ESO data table + Lead, Driver column
 #' @export
@@ -34,9 +39,7 @@ join_crew <- function(.data, year, month=FALSE) {
 #' was a cardiac arrest or not.
 #'
 #' @param the_incidents Incidents table
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
-#'
+#' @inheritParams import_eso_data
 #' @return Incidents + OHCA field
 #' @export
 cardiac_arrest <- function(the_incidents, year, month=FALSE) {
@@ -55,8 +58,7 @@ cardiac_arrest <- function(the_incidents, year, month=FALSE) {
 #' Wrapper for Cardiac Arrest function
 #'
 #' @param data incident table
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#' @inheritParams import_eso_data
 #'
 #' @return tibble with OHCA field
 #' @export
@@ -68,9 +70,7 @@ is_cardiac_arrest <- function(data, year, month=FALSE) {
 #' Did the patient get RSI meds?
 #'
 #' @param the_incidents table of incidents
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
-#'
+#' @inheritParams import_eso_data
 #' @return tibble with RSI column added
 #' @export
 #'
@@ -85,8 +85,7 @@ rsi <- function(the_incidents, year, month=FALSE) {
 #' DId the patient get RSI meds before leaving scene?
 #'
 #' @param the_incidents tibble of incidents
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
+#' @inheritParams import_eso_data
 #'
 #' @return tibble iith RSI_onscene
 #' @export
@@ -111,9 +110,7 @@ rsi_onscene <- function(the_incidents, year, month=FALSE) {
 #' Transforms incidents table to include a field "Blood" indicating if the patient received blood products or not.
 #'
 #' @param the_incidents tibble of incidents
-#' @param year String with year to select data for.
-#' @param month optional string with month to select data for. FALSE will load a full year's worth of data.
-#'
+#' @inheritParams import_eso_data
 #' @return tibble with Blood field
 #' @export
 #'
