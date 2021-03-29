@@ -148,3 +148,29 @@ get_operational_period_intervals <- function(startDate, endDate, period_length =
   op_period_intervals
 }
 
+#' Return table names
+#'
+#' @return list of table names
+#' @export
+#'
+tables <- function() {
+  c("ACS",
+    "Airway",
+    "Allergies",
+    "Cardiac",
+    "CPR",
+    "eAirway",
+    "General",
+    "Incidents",
+    "IV",
+    "Labs",
+    "Medications",
+    "Narrative",
+    "Patient_Info",
+    "Personnel",
+    "QM",
+    "Stroke",
+    "Trauma",
+    "Vitals+",
+    "Treatments")
+}
