@@ -21,8 +21,7 @@ get_eso_by_date <- function(start, end, tablename) {
   # Get years and loop through months
   years <- seq(from=lubridate::year(start), to=lubridate::year(end))
 
-  # Empty list for paths to load
-  load_paths <- tibble()
+  if (exists("load_paths")) rm(load_paths)
 
   for (y in years) {
     months <- seq(from = if_else(y == lubridate::year(start),
@@ -64,6 +63,17 @@ get_eso_by_date <- function(start, end, tablename) {
 
   pmap_dfr(list(load_paths$y, load_paths$m, load_paths$tablename),
            load_individual_data) -> out
+
+  # Load incidents to filter by date
+
+  if (tablename != "Incidents") {
+    pmap_dfr(list(load_paths$y, load_paths$m, rep("Incidents", length.out = nrow(load_paths))),
+           load_individual_data) %>%
+      select(PatientCareRecordId, dtDate) -> incidents
+    out %>% left_join(incidents) -> out
+  }
+
+  out %>% filter(dtDate %within% interval(start,end))
 
 }
 
