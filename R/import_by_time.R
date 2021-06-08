@@ -18,6 +18,9 @@ get_eso_by_date <- function(start, end, tablename) {
   if (is.character(start)) start <- lubridate::ymd(start)
   if (is.character(end)) end <- lubridate::ymd(end)
 
+  # If tablename is treatments, it needs special treatment. haha...
+
+
   # Get years and loop through months
   years <- seq(from=lubridate::year(start), to=lubridate::year(end))
 
@@ -100,6 +103,9 @@ load_individual_data <- function(year, month, tablename) {
          },
          CPR = {
            import_cpr(year, month)
+         },
+         Personnel = {
+           import_personnel(year, month)
          },
          {
            import_eso_data(year,  month, tablename)
