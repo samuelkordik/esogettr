@@ -15,7 +15,7 @@ reporting purposes.
 How to import:
 
 ``` r
-install_github("samuelkordik/ESO", auth_token="35476994d9ed123dc5722c5557c960b8bf7874c8")
+install_github("samuelkordik/esogettr")
 ```
 
 ## Data Sources
