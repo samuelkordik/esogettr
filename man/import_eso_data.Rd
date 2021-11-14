@@ -2,9 +2,9 @@
 % Please edit documentation in R/import_eso_functions.R
 \name{import_eso_data}
 \alias{import_eso_data}
+\alias{import_personnel}
 \alias{import_patients}
-\alias{import_incidents}
-\alias{import_vitals}
+\alias{import_incidents_by_time}
 \alias{import_treatments}
 \alias{import_stroke}
 \alias{import_narrative}
@@ -13,11 +13,11 @@
 \usage{
 import_eso_data(year, month = FALSE, table_name)
 
+import_personnel(year, month = FALSE)
+
 import_patients(year, month = FALSE)
 
-import_incidents(year, month = FALSE)
-
-import_vitals(year, month = FALSE)
+import_incidents_by_time(start, end)
 
 import_treatments(year, month = FALSE)
 
@@ -49,11 +49,11 @@ Requires file_root to be present in the environment.
 }
 \section{Functions}{
 \itemize{
-\item \code{import_patients}: Imports the patient information table and adds calculated age.
+\item \code{import_personnel}: Imports the crew information table.
 
-\item \code{import_incidents}: Imports incident information
+\item \code{import_patients}: Imports the patient information table and adds calculated age and age range.
 
-\item \code{import_vitals}: Imports vital sign records
+\item \code{import_incidents_by_time}: Imports vital sign records
 
 \item \code{import_treatments}: Imports complete treatment set
 

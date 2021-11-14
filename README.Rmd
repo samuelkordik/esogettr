@@ -13,24 +13,24 @@ knitr::opts_chunk$set(
 )
 ```
 
-# groverr
+# esogettr
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of groverr is to make it easy to import data from ESO sources, CAD, and manipulate it.
+The goal of esogettr is to make it easy to import data from ESO EHR data sources and manipulate it for use in data analytics, modeling, and reporting purposes.
 
 ## Installation
 How to import:
 ```{r, eval=FALSE}
-install_github("samuelkordik/groverr", auth_token="35476994d9ed123dc5722c5557c960b8bf7874c8")
+install_github("samuelkordik/ESO", auth_token="35476994d9ed123dc5722c5557c960b8bf7874c8")
 ```
 
 
 ## Data Sources
 
 ### ESO Data
-Groverr expects ESO data to be downloaded from Ad Hoc to a single directory with the following specifications:
+esogettr expects ESO data to be downloaded from Ad Hoc to a single directory with the following specifications:
 
   - Flat file CSV
   - Name: Either "YYYY-MM{table_name}" or "YYYY_{table_name}" with the table names following a pattern that isn't necessarily logical.
@@ -41,7 +41,7 @@ Groverr expects ESO data to be downloaded from Ad Hoc to a single directory with
 
 Importing ESO data:
 ```{r example, eval=FALSE}
-library(groverr)
+library(esogettr)
 ## set file_root
 file_root <- get_file_root()
 
@@ -76,19 +76,15 @@ Custom import functions ensure consistent typing, and more:
 - rsi: Adds field for RSI meds or not
 - rsi_onscene
 - blood
-
-## Importing CAD
-- get_cad_incidents(server, database, UID, PWD, agency, tzone="US/Central")
   
   
 ## Utilities
-- add_op_periods: Can sort CAD incidents or any thing with a DispatchedTime field into operational periods.
 - merge_eso_data: Useful to merge multiple files downloaded from Ad Hoc together. Key for year-long or larger datasets that run into row length limitations.
 
 ## Notes
 FILE ROOTS:
 ```{r file_roots}
-#file_root <- "C:/Users/skordik/OneDrive - Cypress Creek Emergency Medical Services/March Data/"
-#file_root <- "/Users/samuelkordik/OneDrive - Cypress Creek Emergency Medical Services/March Data/"
+#file_root <- "C:/Users/skordik/Data/"
+#file_root <- "/Users/samuelkordik/Data/"
 #file_root <- "W:/Monthly ESO Data/"
 ```

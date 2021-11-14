@@ -14,7 +14,7 @@ get_file_root <- function(override_interactive = FALSE) {
   user_name <- Sys.info()["user"]
 
   file_root <- switch(sys_type,
-                      "Darwin" = paste0("/Users/",user_name,"/OneDrive - Cypress Creek Emergency Medical Services/March Data/"),
+                      "Darwin" = paste0("/Users/",user_name,"/Data/"),
                       "Windows" = windows_file_root(user_name, override_interactive))
 
   while(!fs::dir_exists(file_root)) {
@@ -40,7 +40,7 @@ get_file_root <- function(override_interactive = FALSE) {
 windows_file_root <- function(user_name, override_interactive = FALSE) {
 
   # default file root
-  file_root <- paste0("C:/Users/",user_name,"/OneDrive - Cypress Creek Emergency Medical Services/March Data/")
+  file_root <- paste0("C:/Users/",user_name,"/Data/")
 
   # Check to see if interactive
 

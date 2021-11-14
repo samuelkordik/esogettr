@@ -6,12 +6,12 @@
 #'
 #' @inheritParams import_eso_data
 #' @param filter_set Tibble of ESO data
-#' @param .left_join optional argument that does a left join to add the filtered set to incidents.
+#' @param left_join optional argument that does a left join to add the filtered set to incidents.
 #' @export
 #'
-filtered_incidents <- function(year, month, filter_set, .left_join=FALSE) {
+filtered_incidents <- function(year, month, filter_set, left_join=FALSE) {
   incidents <- import_eso_data(year, month, "Incidents") %>% filter(PatientCareRecordId %in% filter_set$PatientCareRecordId)
-  if (.left_join) {
+  if (left_join) {
     incidents <- left_join(incidents, filter_set, by="PatientCareRecordId")
   }
   return(incidents)
@@ -28,7 +28,10 @@ filtered_incidents <- function(year, month, filter_set, .left_join=FALSE) {
 #' @export
 #'
 join_crew <- function(.data, year, month=FALSE) {
-  personnel <- import_eso_data(year, month, "Personnel") %>% unite(full_name, `Crew Member Last Name`, `Crew Member First Name`, sep=", ") %>% dplyr::select(PatientCareRecordId, full_name, `Crew Member Role`) %>% filter(`Crew Member Role` %in% c("Lead", "Driver"))
+  personnel <- import_eso_data(year, month, "Personnel") %>%
+    unite(full_name, `Crew Member Last Name`, `Crew Member First Name`, sep=", ") %>%
+    dplyr::select(PatientCareRecordId, full_name, `Crew Member Role`) %>%
+    filter(`Crew Member Role` %in% c("Lead", "Driver"))
   personnel <- personnel %>% unique() %>% spread(key=`Crew Member Role`, value=full_name)
   .data %>% left_join(personnel, by="PatientCareRecordId")
 }

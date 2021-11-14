@@ -4,7 +4,7 @@
 \alias{filtered_incidents}
 \title{Imports a Filtered Incident Set}
 \usage{
-filtered_incidents(year, month, filter_set, .left_join = FALSE)
+filtered_incidents(year, month, filter_set, left_join = FALSE)
 }
 \arguments{
 \item{year}{Year of data set as "YYYY" string}
@@ -13,7 +13,7 @@ filtered_incidents(year, month, filter_set, .left_join = FALSE)
 
 \item{filter_set}{Tibble of ESO data}
 
-\item{.left_join}{optional argument that does a left join to add the filtered set to incidents.}
+\item{left_join}{optional argument that does a left join to add the filtered set to incidents.}
 }
 \description{
 Imports the Incidents table for a given year and month

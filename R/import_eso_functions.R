@@ -21,7 +21,23 @@ import_eso_data <- function(year, month=FALSE, table_name) {
   read_eso_csv(year, month, table_name)
 }
 
-#' @describeIn import_eso_data Imports the patient information table and adds calculated age.
+#' @describeIn import_eso_data Imports the crew information table.
+#' @export
+
+import_personnel <- function(year, month=FALSE) {
+  read_eso_csv(year, month, "Personnel", na=character(),
+                           col_types = cols(
+                             PatientCareRecordId = col_character(),
+                             `Crew Member First Name` = col_character(),
+                             `Crew Member Last Name` = col_character(),
+                             `Crew Member Role` = col_character(),
+                             `Crew Member Id` = col_character(),
+                             `Crew Member Level` = col_character()
+                           ))
+}
+
+
+#' @describeIn import_eso_data Imports the patient information table and adds calculated age and age range.
 #' @export
 
 import_patients <- function(year, month=FALSE) {
@@ -36,6 +52,7 @@ import_patients <- function(year, month=FALSE) {
            ))
   patients %>% mutate(`Patient DOB` = mdy_hms(`Patient DOB`),
                       age_years = convert_estimated_age(`Patient Age`),
+                      age_range = get_age_range(`Patient Age`)
                       )
 }
 
@@ -44,20 +61,96 @@ import_patients <- function(year, month=FALSE) {
 #'
 #' @param patient_age Age in string
 #'
-#' @return Double of patient age in years
+#' @return patient age in years, as double
 convert_estimated_age <- function(patient_age) {
   ages <- str_match(patient_age,
                     "(\\d+) Years, (\\d+) Months, (\\d*) Days")
-  ages[,2] <- as.numeric(ages[,2])
-  ages[,3] <- as.numeric(ages[,3])
-  ages[,4] <- as.numeric(ages[,4])
+  ages[,2] <- as.numeric(ages[,2]) # Years
+  ages[,3] <- as.numeric(ages[,3]) # Months
+  ages[,4] <- as.numeric(ages[,4]) # Days
   as.numeric(ages[,2]) + as.numeric(ages[,3])/12 + as.numeric(ages[,4])/365
 }
 
-#' @describeIn import_eso_data Imports incident information
-#' @export
+#' Takes age in years and returns the age range
+#'
+#' Ages as follows:
+#' Newborn: < 24 hours
+#' Neonate: 1 day - 1 month
+#' Infant: 1 month - 1 year
+#' Toddler: 1-3 years
+#' Preschooler: 3-6 years
+#' School Ager: 6-12 years
+#' Adolescent: 12-18 years
+#' Adult: 18-64 years
+#' Geriatric: 64 years and older
+#'
+#' @param patient_age Age in string
+#'
+#' @return age range definition as string
+get_age_range <- function(patient_age) {
+  ages <- str_match(patient_age,
+                    "(\\d+) Years, (\\d+) Months, (\\d*) Days")
+  age_years <- as.numeric(ages[,2]) # Years
+  age_months <- as.numeric(ages[,3]) # Months
+  age_days <- as.numeric(ages[,4]) # Days
 
-import_incidents <- function(year, month=FALSE) {
+  case_when(
+    age_years == 0 & age_months == 0 & age_days <= 1 ~ "Newborn",
+    age_years == 0 & age_months < 1 ~ "Neonate",
+    age_years < 1 ~ "Infant",
+    age_years < 3 ~ "Toddler",
+    age_years < 6 ~ "Preschooler",
+    age_years < 12 ~ "School Ager",
+    age_years < 18 ~ "Adolescent",
+    age_years < 64 ~ "Adult",
+    age_years >= 64 ~ "Geriatric"
+  )
+
+}
+
+
+#' Import Incidents with helpful additional fields added
+#'
+#' Uses two approaches to import: the year, month option brings
+#' in incidents based on a given year and month. The start and end
+#' option does so based on time.
+#'
+#' @param year Year of the data desired
+#' @param month Month of the data desired
+#' @param start Start date
+#' @param end End date.
+#' @param join_crew BOOL Adds columns for lead and driver crew names.
+#'
+#' @return
+#' @export
+#'
+import_incidents <- function(year=NULL, month=NULL, start=NULL, end=NULL, join_crew=NULL) {
+  if (missing(year)) {
+    if (missing(start)) stop("Missing year and start dates. Must specify one or the other.")
+    if (missing(end)) stop("Missing year and end dates. Must specify one or the other.")
+
+    incidents <- get_eso_by_date(start, end, "Incidents", join_crew)
+
+  } else {
+    stopifnot(typeof(year) == "character")
+    if (missing(month)) {
+      month <- FALSE
+    } else {
+      #stopifnot(typeof(month) == "character")
+    }
+
+    incidents <- import_incidents_by_file(year, month, join_crew)
+
+  }
+
+incidents
+
+}
+
+
+import_incidents_by_file <- function(year, month=FALSE, join_crew = NULL) {
+  if (missing(join_crew)) join_crew <- FALSE
+
   incidents <- read_eso_csv(year, month, "Incidents",
                         col_types = cols(
                           PatientCareRecordId = col_character(),
@@ -143,14 +236,21 @@ import_incidents <- function(year, month=FALSE) {
   incidents <- incidents %>% mutate(dtDate = mdy_hms(`Incident Date`, truncated=1),
                                     month = paste(year(dtDate), sprintf("%02d", month(dtDate)), sep="-")
   )
+
+  if (join_crew == TRUE) {
+    incidents <- join_crew(incidents, year, month)
+  }
+
   incidents
 
 }
 
+import_incidents_by_time <- function(start, end)
+
+
 #' @describeIn import_eso_data Imports vital sign records
 #' @export
 #'
-
 import_vitals <- function(year, month=FALSE) {
   vitals <- read_eso_csv(year, month, "Vitals+",
                      col_types = cols(
@@ -182,31 +282,26 @@ import_vitals <- function(year, month=FALSE) {
 #'
 
 import_treatments <- function(year, month=FALSE) {
-  if(month == FALSE) {
-    file_pre <- year
-  } else {
-    file_pre <- paste(year, month, sep="_")
-  }
 
-  treatments <-  read_csv(paste0(file_root, file_pre, "_General.csv"),
-                          col_types =   cols(
-                            .default = col_character(),
-                            `Placed At` = col_character(),
-                            Rate = col_integer(),
-                            PEEP = col_integer(),
-                            Vt = col_integer(),
-                            FiO2 = col_integer(),
-                            PIP = col_integer(),
-                            FlowRate = col_double(),
-                            Amount = col_integer(),
-                            Pressure = col_integer()
-                          )
+  treatments <- read_eso_csv(year, month, "General",
+                             col_types =   cols(
+                               .default = col_character(),
+                               `Placed At` = col_character(),
+                               Rate = col_integer(),
+                               PEEP = col_integer(),
+                               Vt = col_integer(),
+                               FiO2 = col_integer(),
+                               PIP = col_integer(),
+                               FlowRate = col_double(),
+                               Amount = col_integer(),
+                               Pressure = col_integer()
+                             )
   ) %>% mutate(category="General")
 
   for(t in c("Airway", "Cardiac", "Medications", "IV")) {
     treatments <- bind_rows(
       treatments,
-      read_csv(paste0(file_root, file_pre, "_", t, ".csv"),
+      read_eso_csv(year, month, t,
                col_types =   cols(
                  .default = col_character(),
                  `Placed At` = col_character(),
@@ -313,12 +408,7 @@ import_narrative <- function(year, month=FALSE) {
 #'
 import_cpr <- function(year, month=FALSE) {
 
-  if(month == FALSE) {
-    file_name <- paste(year, "CPR", sep="_")
-  } else {
-    file_name <- paste(year, month, "CPR", sep="_")
-  }
-  cpr <- read_csv(paste0(file_root, file_name, ".csv"), col_types = cols(
+  cpr <- read_eso_csv(year, month, "CPR", col_types = cols(
     PatientCareRecordId = col_character(),
     `Cardiac Arrest` = col_character(),
     `Cardiac Arrest Etiology` = col_character(),

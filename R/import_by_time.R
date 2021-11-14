@@ -5,12 +5,12 @@
 #' @param start Y-M-D formatted start date
 #' @param end Y-M-D formatted end date
 #' @param tablename Tablename
+#' @param ... additional arguments to pass to read csv
 #'
-#' @return
+#' @return Data frame of data
 #' @export
 #'
-#' @examples
-get_eso_by_date <- function(start, end, tablename) {
+get_eso_by_date <- function(start, end, tablename, ...) {
   stopifnot(any(is.character(start), class(lubridate::ymd(start)) == "Date"))
   stopifnot(any(is.character(end), class(lubridate::ymd(end)) == "Date"))
 
@@ -65,7 +65,8 @@ get_eso_by_date <- function(start, end, tablename) {
 
 
   pmap_dfr(list(load_paths$y, load_paths$m, load_paths$tablename),
-           load_individual_data) -> out
+           load_individual_data,
+           ...) -> out
 
   # Load incidents to filter by date
 
@@ -80,14 +81,14 @@ get_eso_by_date <- function(start, end, tablename) {
 
 }
 
-load_individual_data <- function(year, month, tablename) {
+load_individual_data <- function(year, month, tablename,...) {
   if (is.na(month)) month <- FALSE
   switch(tablename,
          Patient_Info = {
            import_patients(year, month)
          },
          Incidents = {
-           import_incidents(year, month)
+           import_incidents_by_file(year, month,...)
          },
          `Vitals+` = {
            import_vitals(year, month)

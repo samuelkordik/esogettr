@@ -1,4 +1,4 @@
-core <- c("tidyverse", "fs", "glue", "lubridate")
+core <- c("tidyverse", "fs", "glue", "lubridate", "patchwork")
 
 core_unloaded <- function() {
   search <- paste0("package:", core)

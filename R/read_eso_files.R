@@ -71,7 +71,9 @@ read_eso_csv <- function(year, month=FALSE, table_name,...) {
 #' @return filename
 generate_filename <- function(year, month=FALSE,table_name) {
 
-  if (table_name == "Treatments") "General" -> table_name # Hacky way to handle looking up treatments.
+  if (table_name == "Treatments") {
+    "General" -> table_name # Hacky way to handle looking up treatments.
+  }
 
   if(month == FALSE) {
     file_name <- paste0(paste(year, table_name, sep="_"),".csv")

@@ -10,7 +10,7 @@ convert_estimated_age(patient_age)
 \item{patient_age}{Age in string}
 }
 \value{
-Double of patient age in years
+patient age in years, as double
 }
 \description{
 Convert estimated age to decimal age in years
